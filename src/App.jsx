@@ -1,8 +1,9 @@
 
 import React from 'react';
 import './App.css';
-import Form from './Composants/form';
+// import Form from './Composants/Form';
 import TableGestion from './Composants/TableGestion';
+import Form from './Composants/Form';
 
 class App extends React.Component {
   constructor(props) {
