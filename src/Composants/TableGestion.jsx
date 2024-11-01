@@ -3,7 +3,7 @@ import React from "react";
 class TableGestion extends React.Component {
    
   render() {
-    const { utilisateurs } = this.props;
+    const { utilisateurs, modification } = this.props;
 
     return (
       <div>
@@ -13,8 +13,8 @@ class TableGestion extends React.Component {
         <div className="mt-5 container mx-auto">
             <h3 className="text-center ">Utilisateurs</h3>
             <div className="overflow-x-auto">
-            <table class="table mt-3 border-slate-500 w-full place-content-center border-b dark:border-gray-300">
-              <thead>
+            <table className="table mt-3 border-slate-500 w-full place-content-center border-b dark:border-gray-300">
+              <thead className="border-b dark:border-gray-500">
                 <tr>
                   <th scope="border border-slate-700  p-2">Prenom</th>
                   <th scope="border border-slate-700  p-2">Nom</th>
@@ -34,8 +34,8 @@ class TableGestion extends React.Component {
                   <td className=" border-b dark:border-gray-300 ">{coder.email}</td>
                   <td className="  border-b dark:border-gray-300">{coder.telephone}</td>
                   <td className="border-b dark:border-gray-300 flex justify-center gap-3">
-                  <button className="text-sm font-bold bg-yellow-400 flex py-2 px-2 text-white rounded-lg shadow-md focus:outline-none "
-                     onClick={() =>{this.modification(coder, index)}}
+                  <button className="text-sm font-bold bg-yellow-400 flex py-2 px-2  rounded-lg shadow-md focus:outline-none "
+                     onClick={() => { modification(index) }}
                     >
                      modifer
                     </button>

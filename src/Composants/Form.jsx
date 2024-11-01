@@ -63,7 +63,7 @@ class Form extends React.Component {
                                 type="submit"
                                 className="text-center rounded-lg p-2 w-full mt-3 text-white bg-green-700 focus:ring-4 focus:outline-none focus:ring-b"
                             >
-                                Ajouter
+                                 {this.props.modifier ? "Modifier" : "Ajouter"}
                             </button>
                         </form>
                     </div>
