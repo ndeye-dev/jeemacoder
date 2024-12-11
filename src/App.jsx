@@ -1,113 +1,85 @@
-
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import TableGestion from './Composants/TableGestion';
 import Form from './Composants/Form';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    // Récupérer les utilisateurs depuis le local storage
-    const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || []; 
+const App = () => {
 
-    this.state = { 
-      prenomInput: "",
-      nomInput: "",
-      emailInput: "",
-      telephoneInput: "",
-      utilisateurs: utilisateurs,
-      modifier: false,
-      indexModif: null,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.modification = this.modification.bind(this);
-    this.supprimeLigne = this.supprimeLigne.bind(this);
-  }
-// supprimer 
-  supprimeLigne = (index) => {
-    const supp = [...this.state.utilisateurs];
-    supp.splice(index, 1);
-    this.setState({ utilisateurs: supp });
-    localStorage.setItem('utilisateurs', JSON.stringify(supp));
+  const [utilisateurs, setUtilisateurs] = useState(
+    JSON.parse(localStorage.getItem('utilisateurs')) || []
+  );
+  const [prenomInput, setPrenomInput] = useState('');
+  const [nomInput, setNomInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [telephoneInput, setTelephoneInput] = useState('');
+  const [modifier, setModifier] = useState(false);
+  const [indexModif, setIndexModif] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('utilisateurs', JSON.stringify(utilisateurs));
+  }, [utilisateurs]);
+
+  // Supprimer un utilisateur
+  const supprimeLigne = (index) => {
+    const updatedUsers = [...utilisateurs];
+    updatedUsers.splice(index, 1);
+    setUtilisateurs(updatedUsers);
   };
 
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
+  // Gérer les changements dans les inputs
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'prenomInput') setPrenomInput(value);
+    if (name === 'nomInput') setNomInput(value);
+    if (name === 'emailInput') setEmailInput(value);
+    if (name === 'telephoneInput') setTelephoneInput(value);
+  };
 
-  handleClick(e) {
+  const handleClick = (e) => {
     e.preventDefault();
-    const { prenomInput, nomInput, emailInput, telephoneInput, modifier, indexModif } = this.state;
-  
-    const newTable = {
-      prenom: prenomInput,
-      nom: nomInput,
-      email: emailInput,
-      telephone: telephoneInput,
-    };
-  
+    const newTable = { prenom: prenomInput, nom: nomInput, email: emailInput, telephone: telephoneInput };
+
     if (modifier) {
-      const updateUtilisateur = [...this.state.utilisateurs];
-      updateUtilisateur[indexModif] = newTable;
-      this.setState({
-        utilisateurs: updateUtilisateur,
-        modifier: false,
-        indexModif: null,
-        prenomInput: "",
-        nomInput: "",
-        emailInput: "",
-        telephoneInput: ""
-      });
-   
-      
-      localStorage.setItem('utilisateurs', JSON.stringify(updateUtilisateur)); // Mettre à jour le local storage
+      const updatedUsers = [...utilisateurs];
+      updatedUsers[indexModif] = newTable;
+      setUtilisateurs(updatedUsers);
+      setModifier(false);
+      setIndexModif(null);
     } else {
-      this.setState(prevState => {
-        const utilisateurs = [newTable, ...prevState.utilisateurs]; // Ajouter le nouvel utilisateur en haut
-        localStorage.setItem('utilisateurs', JSON.stringify(utilisateurs)); // Mettre à jour le local storage
-        return {
-          utilisateurs: utilisateurs,
-          prenomInput: "",
-          nomInput: "",
-          emailInput: "",
-          telephoneInput: ""
-        };
-        
-      });
-      console.log(this.state.utilisateurs);
+      setUtilisateurs([newTable, ...utilisateurs]);
     }
-  }
-  // modification 
-  modification = (index) => {
-    const utilisateur = this.state.utilisateurs[index];
-    this.setState({
-      prenomInput: utilisateur.prenom,
-      nomInput: utilisateur.nom,
-      emailInput: utilisateur.email,
-      telephoneInput: utilisateur.telephone,
-      modifier: true,
-      indexModif: index
-    });
+
+    setPrenomInput('');
+    setNomInput('');
+    setEmailInput('');
+    setTelephoneInput('');
   };
 
-  render() { 
-    return (
-      <div>
-        <Form 
-          prenomInput={this.state.prenomInput}
-          nomInput={this.state.nomInput}
-          emailInput={this.state.emailInput}
-          telephoneInput={this.state.telephoneInput}
-          handleChange={this.handleChange}
-          handleClick={this.handleClick}
-          modifier={this.state.modifier}
-        />
-        <TableGestion utilisateurs={this.state.utilisateurs} modification={this.modification} supprimeLigne={this.supprimeLigne} />
-      </div>
-    );
-  }
-}
+  // Modifier un utilisateur
+  const modification = (index) => {
+    const utilisateur = utilisateurs[index];
+    setPrenomInput(utilisateur.prenom);
+    setNomInput(utilisateur.nom);
+    setEmailInput(utilisateur.email);
+    setTelephoneInput(utilisateur.telephone);
+    setModifier(true);
+    setIndexModif(index);
+  };
+
+  return (
+    <div>
+      <Form
+        prenomInput={prenomInput}
+        nomInput={nomInput}
+        emailInput={emailInput}
+        telephoneInput={telephoneInput}
+        handleChange={handleChange}
+        handleClick={handleClick}
+        modifier={modifier}
+      />
+      <TableGestion utilisateurs={utilisateurs} modification={modification} supprimeLigne={supprimeLigne} />
+    </div>
+  );
+};
 
 export default App;
